@@ -12,7 +12,7 @@ cd $_
 echo "aaa" > a
 git -c user.name=agit -c user.email=agit@example.com init
 git -c user.name=agit -c user.email=agit@example.com add -A
-git -c user.name=agit -c user.email=agit@example.com commit -m"${COMMIT_MSG[0]}"
+faketime '2015-01-01 00:00:00' git -c user.name=agit -c user.email=agit@example.com commit -m"${COMMIT_MSG[0]}"
 echo "bbbb" > b
 git -c user.name=agit -c user.email=agit@example.com add -A
 git -c user.name=agit -c user.email=agit@example.com commit -m"${COMMIT_MSG[1]}"
