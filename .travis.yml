@@ -1,6 +1,6 @@
 language: viml
 install:
-    - sudo apt-get install libfaketime
+    - sudo apt-get install faketime
     - git clone https://github.com/thinca/vim-themis
     - test/init-repos.sh
 script:
