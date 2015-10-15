@@ -24,7 +24,7 @@ let s:git = {
 \ }}
 
 function! s:git.log(winwidth) dict
-  let gitlog = agit#git#exec('log --all --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]"', self.git_dir)
+  let gitlog = agit#git#exec('log --all --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -' . g:agit_max_log_lines, self.git_dir)
   " 16 means concealed symbol (4*2 + 2) + hash (7) - right eade margin (1)
   let max_width = a:winwidth + 16
   let gitlog = substitute(gitlog, '\<refs/heads/', '', 'g')
@@ -52,7 +52,7 @@ function! s:git.log(winwidth) dict
 endfunction
 
 function! s:git.filelog(winwidth)
-  let gitlog = agit#git#exec('log --all --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -- "' . self.abspath . '"', self.git_dir)
+  let gitlog = agit#git#exec('log --all --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -' . g:agit_max_log_lines . ' -- "' . self.abspath . '"', self.git_dir)
   " 16 means concealed symbol (4*2 + 2) + hash (7) - right eade margin (1)
   let max_width = a:winwidth + 16
   let gitlog = substitute(gitlog, '\<refs/heads/', '', 'g')
