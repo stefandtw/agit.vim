@@ -153,6 +153,25 @@ function! agit#reload() abort
   endtry
 endfunction
 
+function! agit#filter_prepare_query(specific_argument)
+  if g:agit_custom !~# ('\V' . a:specific_argument) || a:specific_argument == ''
+    let g:agit_custom .= ' ' . a:specific_argument
+  endif
+  let command = 'AgitFilter ' . g:agit_custom
+  if a:specific_argument == ''
+    let specific_argument_for_cursor = '\\$'
+  else
+    let specific_argument_for_cursor = a:specific_argument
+  endif
+  let cursorpos = match(command, '\V' . specific_argument_for_cursor . '\v[^ ]*\zs') + 1
+  call feedkeys(':' . command . "\<C-r>=setcmdpos(" . cursorpos . ")?'':''\<CR>", 'n')
+endfunction
+
+function! agit#filter_execute(query)
+  let g:agit_custom = a:query
+  call agit#reload()
+endfunction
+
 function! agit#diff() abort
   try
     if !exists('t:git')

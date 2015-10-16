@@ -204,6 +204,18 @@ In |agit-log| buffer, the following key mappings can be used.
 <Plug>(agit-git-revert)				*<Plug>(agit-git-revert)*
 	Execute 'git revert' to revert the cursor line commit.
 
+<Plug>(agit-filter-custom)			*<Plug>(agit-filter-custom)*
+	Filter the log output by typing your own arguments for 'git log'.
+
+<Plug>(agit-filter-message)			*<Plug>(agit-filter-message)*
+	Filter the log output by typing your own '--grep=' argument for 'git log'.
+
+<Plug>(agit-filter-diff)			*<Plug>(agit-filter-diff)*
+	Filter the log output by typing your own '-S' argument for 'git log'.
+
+<Plug>(agit-filter-author)			*<Plug>(agit-filter-author)*
+	Filter the log output by typing your own '--author=' argument for 'git log'.
+
 
 In |agit-log| and |agit-stat| buffer, the following key mappings can be used.
 
@@ -230,6 +242,10 @@ rm			<Plug>(agit-git-reset)
 rh			<Plug>(agit-git-reset-hard)
 rb			<Plug>(agit-git-rebase)
 ri			<Plug>(agit-git-rebase-i)
+<F1>			<Plug>(agit-filter-custom)
+<F2>			<Plug>(agit-filter-message)
+<F3>			<Plug>(agit-filter-diff)
+<F4>			<Plug>(agit-filter-author)
 di			<Plug>(agit-diff)
 
 ------------------------------------------------------------------------------

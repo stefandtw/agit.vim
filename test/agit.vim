@@ -476,3 +476,41 @@ function! s:suite.__option_file__()
     call Expect(message).to_match("File not found: this_file_does_not_exist")
   endfunction
 endfunction
+
+function! s:suite.__filter_test__()
+
+  let filter = themis#suite('filter test')
+
+  function! filter.before_each()
+    edit `=s:repo_path . 'clean/a'`
+    Agit
+    call agit#bufwin#move_to('log')
+  endfunction
+
+  function! filter.after()
+  endfunction
+
+  function! filter.after_each()
+    call agit#git#exec('reset', t:git.git_dir)
+  endfunction
+
+  function! filter.shows_all_by_default()
+    execute 'AgitFilter --all '
+    let head_hash = s:String.chomp(agit#git#exec('rev-parse --short HEAD', s:clean_repo_path))
+    call Expect(getline(1)).to_match(head_hash)
+  endfunction
+
+  function! filter.filters_by_commit_message_or_other_arguments()
+    execute 'AgitFilter --all --grep=1st'
+    let parent_hash = s:String.chomp(agit#git#exec('rev-parse --short HEAD^', s:clean_repo_path))
+    call Expect(getline(1)).to_match(parent_hash)
+    call Expect(line('$')).to_equal(1)
+  endfunction
+
+  function! filter.may_have_no_result()
+    execute 'AgitFilter --all --grep=nothinghere'
+    call Expect(getline(1)).to_match('--- No result ---')
+    call Expect(line('$')).to_equal(1)
+  endfunction
+
+endfunction

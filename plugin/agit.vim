@@ -30,12 +30,20 @@ endif
 if !exists('g:agit_stat_width')
     let g:agit_stat_width = 80
 endif
+if !exists('g:agit_custom')
+  let g:agit_custom = '--all -i'
+endif
+
 
 nnoremap <silent> <Plug>(agit-reload)  :<C-u>call agit#reload()<CR>
 nnoremap <silent> <Plug>(agit-scrolldown-stat) :<C-u>call agit#remote_scroll('stat', 'down')<CR>
 nnoremap <silent> <Plug>(agit-scrollup-stat)   :<C-u>call agit#remote_scroll('stat', 'up')<CR>
 nnoremap <silent> <Plug>(agit-scrolldown-diff) :<C-u>call agit#remote_scroll('diff', 'down')<CR>
 nnoremap <silent> <Plug>(agit-scrollup-diff)   :<C-u>call agit#remote_scroll('diff', 'up')<CR>
+nnoremap <silent> <Plug>(agit-filter-custom)   :<C-u>call agit#filter_prepare_query('')<CR>
+nnoremap <silent> <Plug>(agit-filter-message)  :<C-u>call agit#filter_prepare_query('--grep=')<CR>
+nnoremap <silent> <Plug>(agit-filter-diff)     :<C-u>call agit#filter_prepare_query('-S')<CR>
+nnoremap <silent> <Plug>(agit-filter-author)   :<C-u>call agit#filter_prepare_query('--author=')<CR>
 
 nnoremap <silent> <PLug>(agit-yank-hash) :<C-u>call agit#yank_hash()<CR>
 nnoremap <silent> <Plug>(agit-show-commit) :<C-u>call agit#show_commit()<CR>
@@ -60,5 +68,6 @@ nnoremap <silent> <Plug>(agit-exit)             :<C-u>call agit#exit()<CR>
 
 command! -nargs=* -complete=customlist,agit#complete_command Agit call agit#launch(<q-args>)
 command! -nargs=* -complete=customlist,agit#complete_command AgitFile Agit file <args>
+command! -nargs=* -complete=customlist,agit#complete_command AgitFilter call agit#filter_execute(<q-args>)
 
 let &cpo = s:save_cpo

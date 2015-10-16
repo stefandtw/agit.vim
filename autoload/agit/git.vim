@@ -24,13 +24,17 @@ let s:git = {
 \ }}
 
 function! s:git.log(winwidth) dict
-  let gitlog = agit#git#exec('log --all --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -' . g:agit_max_log_lines, self.git_dir)
+  let gitlog = agit#git#exec('log --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -' . g:agit_max_log_lines . self._filterparams(), self.git_dir)
   " 16 means concealed symbol (4*2 + 2) + hash (7) - right eade margin (1)
   let max_width = a:winwidth + 16
   let gitlog = substitute(gitlog, '\<refs/heads/', '', 'g')
   let gitlog = substitute(gitlog, '\<refs/remotes/', 'r:', 'g')
   let gitlog = substitute(gitlog, '\<refs/tags/', 't:', 'g')
-  let log_lines = map(split(gitlog, "\n"), 'split(v:val, s:sep)')
+  let log_lines_strings = filter(split(gitlog, "\n"), 'v:val !~ "^\\V..."')
+  if len(log_lines_strings) == 0
+    call add(log_lines_strings, '--- No result ---')
+  endif
+  let log_lines = map(log_lines_strings, 'split(v:val, s:sep)')
 
   let aligned_log = agit#aligner#align(log_lines, max_width)
 
@@ -52,7 +56,7 @@ function! s:git.log(winwidth) dict
 endfunction
 
 function! s:git.filelog(winwidth)
-  let gitlog = agit#git#exec('log --all --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -' . g:agit_max_log_lines . ' -- "' . self.abspath . '"', self.git_dir)
+  let gitlog = agit#git#exec('log --graph --decorate=full --no-color --date=relative --format=format:"%d %s' . s:sep . '|>%ad<|' . s:sep . '{>%an<}' . s:sep . '[%h]" -' . g:agit_max_log_lines . self._filterparams() . ' -- "' . self.abspath . '"', self.git_dir)
   " 16 means concealed symbol (4*2 + 2) + hash (7) - right eade margin (1)
   let max_width = a:winwidth + 16
   let gitlog = substitute(gitlog, '\<refs/heads/', '', 'g')
@@ -67,6 +71,10 @@ function! s:git.filelog(winwidth)
   call self._insert_localchanges_loglines(aligned_log)
 
   return join(aligned_log, "\n")
+endfunction
+
+function! s:git._filterparams() dict
+  return ' ' . g:agit_custom
 endfunction
 
 function! s:git._localchanges(cached, relpath) dict
